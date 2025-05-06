@@ -1,0 +1,41 @@
+#include <stdio.h>
+
+int main() {
+    int n;
+
+
+    printf("Enter value of n : ");
+    scanf("%d", &n);
+
+    int a[n];
+
+  
+    for (int i = 0; i < n; i++) {
+        printf("Enter element for a[%d] : ", i);
+        scanf("%d", &a[i]);
+    }
+
+    for (int i = n - 1; i > 0; i--) {
+        int maxIndex = 0;
+        for (int j = 1; j <= i; j++) {
+            if (a[j] > a[maxIndex]) {
+                maxIndex = j;
+            }
+        }
+
+       
+        if (maxIndex != i) {
+            int temp = a[i];
+            a[i] = a[maxIndex];
+            a[maxIndex] = temp;
+        }
+    }
+
+
+    printf("After sorting the elements in the array are\n");
+    for (int i = 0; i < n; i++) {
+        printf("Value of a[%d] = %d\n", i, a[i]);
+    }
+
+    return 0;
+}
