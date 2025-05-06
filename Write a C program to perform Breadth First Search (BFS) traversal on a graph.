@@ -1,0 +1,104 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 99
+
+// Structure to represent a node in the adjacency list
+typedef struct node {
+    int vertex;
+    struct node* next;
+} *GNODE;
+
+// Queue for BFS traversal
+int queue[MAX], front = -1, rear = -1;
+
+// Function to enqueue an element to the queue
+void enqueue(int v) {
+    if (rear == MAX - 1) {
+        printf("Queue overflow\n");
+    } else {
+        if (front == -1) {
+            front = 0;
+        }
+        rear++;
+        queue[rear] = v;
+    }
+}
+
+// Function to dequeue an element from the queue
+int dequeue() {
+    int val;
+    if (front == -1 || front > rear) {
+        return -1;  // Queue is empty
+    }
+    val = queue[front];
+    front++;
+    return val;
+}
+
+// Function to check if the queue is empty
+int isEmpty() {
+    return front == -1 || front > rear;
+}
+
+GNODE graph[MAX];  // Adjacency list representation of the graph
+int visited[MAX];  // Array to keep track of visited vertices
+
+// Function to perform BFS traversal on the graph starting from the 'start' vertex
+void BFS(int start) {
+    int v;
+    GNODE p;
+    visited[start] = 1;  // Mark the start vertex as visited
+    enqueue(start);  // Enqueue the start vertex
+
+    while (!isEmpty()) {
+        v = dequeue();  // Dequeue a vertex
+        printf("%d ", v);  // Print the vertex
+
+        // Traverse the adjacency list of the vertex
+        p = graph[v];
+        while (p != NULL) {
+            if (!visited[p->vertex]) {
+                visited[p->vertex] = 1;  // Mark the vertex as visited
+                enqueue(p->vertex);  // Enqueue the adjacent vertex
+            }
+            p = p->next;  // Move to the next adjacent vertex
+        }
+    }
+}
+
+// Function to add an edge to the graph (directed)
+void addEdge(int src, int dest) {
+    GNODE newNode = (GNODE)malloc(sizeof(struct node));
+    newNode->vertex = dest;
+    newNode->next = graph[src];
+    graph[src] = newNode;
+}
+
+// Main function to drive the program
+void main() {
+    int n, E, i, s, d;
+    
+    // Initialize the graph and visited array
+    for (i = 0; i < MAX; i++) {
+        graph[i] = NULL;
+        visited[i] = 0;
+    }
+
+    // Input the number of vertices and edges
+    printf("Enter number of vertices: ");
+    scanf("%d", &n);
+    printf("Enter number of edges: ");
+    scanf("%d", &E);
+
+    // Input the edges and add them to the graph
+    for (i = 0; i < E; i++) {
+        printf("Enter edge (source destination): ");
+        scanf("%d %d", &s, &d);
+        addEdge(s, d);  // Add a directed edge from s to d
+    }
+
+    // Perform BFS traversal starting from vertex 0
+    printf("BFS traversal starting from vertex 0:\n");
+    BFS(0);  // Starting the BFS from vertex 0
+    printf("\n");
+}
