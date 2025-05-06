@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <conio.h>
+
+#define MAX 10
+
+int cost[MAX][MAX], n, e, i, j, s, d, w, ne = 1;
+int visited[MAX], total = 0;
+
+void prims() {
+    // Start from the first vertex
+    visited[1] = 1;  // Mark the starting vertex as visited
+    int min, u, v;
+
+    while (ne < n) {
+        min = 999;  // Set a high value to find the minimum cost edge
+
+        // Check all edges and find the minimum weight edge from the visited set
+        for (i = 1; i <= n; i++) {
+            if (visited[i] == 1) {  // If the node i is visited
+                for (j = 1; j <= n; j++) {
+                    if (visited[j] == 0 && cost[i][j] < min && cost[i][j] != 0) {
+                        min = cost[i][j];  // Find the minimum cost edge
+                        u = i;
+                        v = j;
+                    }
+                }
+            }
+        }
+
+        // Mark the vertex v as visited
+        visited[v] = 1;
+
+        // Print the selected edge and its weight
+        printf("Edge cost from %d to %d : %d\n", u, v, min);
+        total += min;  // Add the edge cost to the total
+
+        ne++;  // Increment the count of edges in the MST
+    }
+
+    // Print the total minimum cost of the spanning tree
+    printf("Minimum cost of spanning tree = %d\n", total);
+}
+
+void main() {
+    // Input number of vertices and edges
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+    printf("Enter the number of edges: ");
+    scanf("%d", &e);
+
+    // Initialize the cost matrix to zero
+    for (i = 1; i <= n; i++) {
+        for (j = 1; j <= n; j++) {
+            cost[i][j] = 0;
+        }
+    }
+
+    // Input edges and their weights
+    printf("Enter the edges and their weights (source destination weight):\n");
+    for (i = 1; i <= e; i++) {
+        printf("Enter edge %d (source destinatio
