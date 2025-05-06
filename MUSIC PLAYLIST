@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_TITLE_LENGTH 100
+
+
+typedef struct SongNode {
+    char title[MAX_TITLE_LENGTH];
+    struct SongNode* next;
+    struct SongNode* prev;
+} SongNode;
+
+SongNode* head = NULL;
+SongNode* current = NULL;
+
+
+SongNode* createNode(const char* title) {
+    SongNode* newNode = (SongNode*)malloc(sizeof(SongNode));
+    strcpy(newNode->title, title);
+    newNode->next = newNode->prev = NULL;
+    return newNode;
+}
+
+
+void addSong(const char* title) {
+    SongNode* newNode = createNode(title);
+    if (head == NULL) {
+        head = newNode;
+        head->next = head->prev = head;
+    } else {
+        SongNode* tail = head->prev;
+        tail->next = newNode;
+        newNode->prev = tail;
+        newNode->next = head;
+        head->prev = newNode;
+    }
+    if (current == NULL) {
+        current = head;
+    }
+    printf("Added: %s\n", title);
+}
+
+
+void removeCurrentSong() {
+    if (current == NULL) {
+        printf("Playlist is empty.\n");
+        return;
+    }
+
+    printf("Removing: %s\n", current->title);
+
+    if (current->next == current) {
+        free(current);
+        head = current = NULL;
+        return;
+    }
+
+    SongNode* prevNode = current->prev;
+    SongNode* nextNode = current->next;
+
+    prevNode->next = nextNode;
+    nextNode->prev = prevNode;
+
+    if (current == head) {
+        head = nextNode;
+    }
+
+    free(current);
+    current = nextNode;
+}
+
+// Play next song
+void playNext() {
+    if (current == NULL) {
+        printf("Playlist is empty.\n");
+        return;
+    }
+    current = current->next;
+    printf("Playing next: %s\n", current->title);
+}
+
+
+void playPrevious() {
+    if (current == NULL) {
+        printf("Playlist is empty.\n");
+        return;
+    }
+    current = current->prev;
+    printf("Playing previous: %s\n", current->title);
+}
+
+
+void showPlaylist() {
+    if (head == NULL) {
+        printf("Playlist is empty.\n");
+        return;
+    }
+
+    printf("Playlist:\n");
+    SongNode* temp = head;
+    do {
+        printf("- %s\n", temp->title);
+        temp = temp->next;
+    } while (temp != head);
+}
+
+
+void currentSong() {
+    if (current == NULL) {
+        printf("No song is currently playing.\n");
+        return;
+    }
+    printf("Currently playing: %s\n", current->title);
+}
+
+
+int main() {
+    addSong("Song A");
+    addSong("Song B");
+    addSong("Song C");
+    showPlaylist();
+    currentSong();
+    playNext();
+    playPrevious();
+    removeCurrentSong();
+    showPlaylist();
+    return 0;
+}
